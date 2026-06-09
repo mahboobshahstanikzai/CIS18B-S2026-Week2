@@ -1,38 +1,42 @@
 package edu.norcocollege.cis18b.week2.alerts;
-import edu.norcocollege.cis18b.week2.alerts.SecurityAlert;
-import edu.norcocollege.cis18b.week2.alerts.SecurityAlertManager;
 
-/**
- * Entry point for Week 1.
- *
- * TODO:
- *  - Create at least 3 SecurityAlert objects
- *  - Add them to SecurityAlertManager
- *  - Print a formatted report using a text block
- *  - Demonstrate calling at least one manager method
- */
 public class App {
-
     public static void main(String[] args) {
-
-        // TODO: Create SecurityAlertManager instance
         SecurityAlertManager manager = new SecurityAlertManager();
 
-        // TODO: Create multiple SecurityAlert records
-        // Example:
-        // var alert1 = new SecurityAlert(...);
+        // Create alerts
+        var alert1 = new SecurityAlert("A001", "Firewall", "HIGH", 
+            "Multiple failed login attempts", System.currentTimeMillis());
+        var alert2 = new SecurityAlert("A002", "IDS", "CRITICAL", 
+            "SQL injection detected", System.currentTimeMillis());
+        var alert3 = new SecurityAlert("A003", "Antivirus", "LOW", 
+            "Suspicious file quarantined", System.currentTimeMillis());
 
-        // TODO: Add alerts to manager
+        // Add to manager
+        manager.addAlert(alert1);
+        manager.addAlert(alert2);
+        manager.addAlert(alert3);
 
-        // TODO: Query by severity and print results
+        // Query by severity
+        System.out.println("HIGH severity alerts: " + manager.findBySeverity("HIGH").size());
 
-        // TODO: Print formatted report using text block
-        /*
-        System.out.println("""
-            === SECURITY ALERT REPORT ===
-            Total Alerts: %d
-            High Severity Alerts: %d
-            """.formatted(total, highCount));
-        */
+        // Find by ID
+        manager.findById("A002").ifPresent(a -> 
+            System.out.println("Found: " + a.id()));
+
+        // Print report using text block
+        long total = manager.getAllAlerts().size();
+        long highCount = manager.findBySeverity("HIGH").size();
+
+        String report = """
+            ╔═══════════════════════════════╗
+            ║     SECURITY ALERT REPORT     ║
+            ╠═══════════════════════════════╣
+            ║  Total Alerts:      %4d       ║
+            ║  HIGH Severity:     %4d       ║
+            ╚═══════════════════════════════╝
+            """.formatted(total, highCount);
+
+        System.out.println(report);
     }
 }
